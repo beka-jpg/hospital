@@ -11,6 +11,7 @@ public class Patient {
     private BankAccount bankAccount;
     private Hospital hospital;
     private Schedule[] schedules;
+    private Patient patient;
 
     public Patient(
             String fullName,
@@ -32,7 +33,10 @@ public class Patient {
         this.fullName = fullName;
     }
 
-
+    public Patient(String fullName, int age) {
+        this.fullName = fullName;
+        this.age = age;
+    }
 
     public void addNewSchedule(Schedule schedule) {
         Schedule[] allSchedules = Arrays.copyOf(schedules, schedules.length + 1);
@@ -41,6 +45,7 @@ public class Patient {
     }
 
     public String bookAppointment(Patient patient, LocalDateTime date, Speciality disease, boolean processed, Doctor doctor) {
+        this.patient = patient;
         doctor.addNewSchedule(this, date, disease,  processed);
         return "Запись успешно создан ! Ваш врач " + doctor.getFullName() + " " + "Будет ждать вас в " + date;
     }

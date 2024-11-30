@@ -52,7 +52,6 @@ public class Schedule {
     @Override
     public String toString() {
         return "Schedule{" +
-                "patient=" + patient +
                 ", date=" + date +
                 ", disease='" + disease + '\'' +
                 ", processed=" + processed +

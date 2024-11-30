@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class Hospital {
     private String name;
     private String address;
-    private String emailDoctors;
+    private String email;
     private Doctor[] doctors;
     private Speciality[] specialities;
     private BankAccount bankAccount;
@@ -16,13 +16,13 @@ public class Hospital {
     public Hospital(
             String name,
             String address,
-            String emailDoctors,
+            String email,
             Doctor[] doctors,
             Speciality[] specialities,
             BankAccount bankAccount) {
         this.name = name;
         this.address = address;
-        this.emailDoctors = emailDoctors;
+        this.email = email;
         this.doctors = doctors;
         this.specialities = specialities;
         this.bankAccount = bankAccount;
@@ -145,12 +145,12 @@ public class Hospital {
         this.address = address;
     }
 
-    public String getEmailDoctors() {
-        return emailDoctors;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailDoctors(String emailDoctors) {
-        this.emailDoctors = emailDoctors;
+    public void setEmail (String emailDoctors) {
+        this.email = emailDoctors;
     }
 
     public Doctor[] getDoctors() {
@@ -183,7 +183,7 @@ public class Hospital {
         return "Hospital{" +
                 "name='" + name + '\'' +
                 ", address='" + address + '\'' +
-                ", emailDoctors='" + emailDoctors + '\'' +
+                ", emailDoctors='" + email + '\'' +
                 ", doctors=" + Arrays.toString(doctors) +
                 ", specialities=" + Arrays.toString(specialities) +
                 ", bankAccount=" + bankAccount +

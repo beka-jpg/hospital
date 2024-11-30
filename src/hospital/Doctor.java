@@ -68,7 +68,7 @@ public class Doctor {
     }
 
         public String addNewSchedule(Patient patient, LocalDateTime localDateTime, Speciality disease, boolean processed){
-        Schedule schedule = new Schedule(patient, localDateTime, disease, false);
+        Schedule schedule = new Schedule(patient, localDateTime, disease, processed);
         Schedule[] allSchedules = Arrays.copyOf(schedules, schedules.length+1);
         allSchedules[allSchedules.length -1] = schedule;
         schedules = allSchedules;
@@ -129,37 +129,41 @@ public class Doctor {
 //        return schedules;
 //    }
 
-    public Schedule[] getAllSchedules (Boolean processed) {
+    public Schedule[] getAllSchedules () {
         int counter = 0 ;
         int index = 0 ;
-        if (processed) {
-            for (int i = 0; i < schedules.length; i++) {
+        for (int i = 0 ; i < schedules.length; i++){
+            if (! schedules[i].equals(null)) {
                 if (schedules[i].isProcessed()) {
-                    counter++;
+
+                    if (schedules[i].isProcessed()) {
+                        counter++;
+                    }
+
+                    Schedule[] allSchedules = new Schedule[counter];
+                    for (int j = 0; j < schedules.length; j++) {
+                        if (schedules[j].isProcessed()) {
+                            allSchedules[index] = schedules[j];
+                            index++;
+                        }
+                    }
+                    return allSchedules;
+                } else if (!schedules[i].isProcessed()) {
+                    for (int k = 0; k < schedules.length; k++) {
+                        if (!schedules[k].isProcessed()) {
+                            counter++;
+                        }
+                    }
+                    Schedule[] allSchedules = new Schedule[counter];
+                    for (int l = 0; l < schedules.length; l++) {
+                        if (!schedules[l].isProcessed()) {
+                            allSchedules[index] = schedules[l];
+                            index++;
+                        }
+                    }
+                    return allSchedules;
                 }
             }
-            Schedule[] allSchedules = new Schedule[counter];
-            for (int i = 0; i < schedules.length; i++) {
-                if(schedules[i].isProcessed()){
-                    allSchedules[index]=schedules[i];
-                    index++;
-                }
-            }
-            return allSchedules;
-        } else if (!processed) {
-            for (int i = 0; i < schedules.length; i++) {
-                if(!schedules[i].isProcessed()){
-                    counter++;
-                }
-            }
-            Schedule[] allSchedules = new Schedule[counter];
-            for (int i = 0; i < schedules.length; i++) {
-                if(!schedules[i].isProcessed()){
-                    allSchedules[index]=schedules[i];
-                    index++;
-                }
-            }
-            return allSchedules;
         }
         return schedules;
     }

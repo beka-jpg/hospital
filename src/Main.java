@@ -1,5 +1,7 @@
 import hospital.*;
 
+import javax.print.Doc;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Random;
@@ -12,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         hospital.setAddress("проспект мира 57");
         hospital.setName("Hospital");
-        hospital.setEmailDoctors("inf@gmail.com");
+        hospital.setEmail("inf@gmail.com");
 
         Speciality[] specialities = {
                 new Speciality("Кардиология", 1200),
@@ -51,57 +53,334 @@ public class Main {
         };
 
 
-        System.out.println(Arrays.toString(hospital.getDoctors()));
-        System.out.println(Arrays.toString(patients));
+
+//        Random random = new Random();
+//        for (Patient patient : patients) {
+//            patient.setHospital(hospital);
+//            Doctor assignedDoctor = doctors[random.nextInt(doctors.length)];
+//            LocalDateTime appointmentTime = LocalDateTime.now().plusDays(random.nextInt(7));
+////
+//            Schedule schedule = new Schedule(patient, appointmentTime, assignedDoctor.getSpeciality(), false);
+//
+//            patient.setSchedules(new Schedule[]{schedule});
+//            assignedDoctor.setSchedules(new Schedule[]{schedule});
+//        }
 
         Random random = new Random();
         for (Patient patient : patients) {
-            patient.setHospital(hospital);
             Doctor assignedDoctor = doctors[random.nextInt(doctors.length)];
             LocalDateTime appointmentTime = LocalDateTime.now().plusDays(random.nextInt(7));
-//
-            Schedule schedule = new Schedule(patient, appointmentTime, assignedDoctor.getSpeciality(), false);
 
+            Schedule schedule = new Schedule(patient, appointmentTime, assignedDoctor.getSpeciality(), false);
             patient.setSchedules(new Schedule[]{schedule});
             assignedDoctor.setSchedules(new Schedule[]{schedule});
         }
-
-        System.out.println(Arrays.toString(hospital.getDoctors()));
-        System.out.println(Arrays.toString(patients));
-        System.out.println(patients);
 
 //        --------------------------------------------------------------------------------------------------------------
         boolean isTrue = true;
 
         do {
+
+
+
             firstMenu();
             int choice = scanner.nextInt();
             switch (choice){
                 case 1:
-                    isTrue = false;
-                    String[] dataAsDoctor = signUp();
-                    System.out.println(Arrays.toString(dataAsDoctor));
 
-                    Doctor yourProfileDoc = checkingProfileDoctor(dataAsDoctor, hospital.getDoctors());
-                    System.out.println(yourProfileDoc);
+                    String[] dataAsDoctor = signUp(); // функиця для ввода имени, логин и пароль
+
+                    boolean isTrueDataDoc = checkingProfileDoctor(dataAsDoctor, hospital.getDoctors());// проверка этих переменных
+                    Doctor yourProileDoc = null;
+
+
+                    if (isTrueDataDoc) {
+
+                        for (int i = 0; i < doctors.length; i++) {
+                            if (doctors[i].getFullName().equals(dataAsDoctor[0])) {
+                                yourProileDoc = doctors[i];
+                            }
+                        }
+
+                        System.out.println(yourProileDoc);
+
+                        menuAsDoctor();
+                        int choiceDoctor = scanner.nextInt();
+
+                        isTrue = false;
+                        boolean isTrueFirst = false;
+
+                        do {
+                            switch (choiceDoctor) {
+                                case 1:
+                                    Schedule[] scheduleAll = yourProileDoc.getAllSchedules();
+                                    System.out.println(Arrays.toString(scheduleAll));
+                                    break;
+                                case 2:
+                                    System.out.println("Введите дату по которому хотите посмотреть ");
+                                    int year = scanner.nextInt();
+                                    int month = scanner.nextInt();
+                                    int day = scanner.nextInt();
+
+                                    LocalDate data = LocalDate.of(year, month, day);
+                                    Schedule[] allScheduleByData = yourProileDoc.getAllSchedulesByDate(data);
+                                    System.out.println(allScheduleByData);
+                                    break;
+                                case 3:
+                                    System.out.println("создать запись на прием");
+                                    System.out.println("Введите данные пациента");
+                                    String fullName = scanner.nextLine();
+                                    int age = scanner.nextInt();
+                                    Patient newPatient = new Patient(fullName, age);
+
+                                    System.out.println("Дата на которую хотите создать запись ");
+                                    int yearForNewSh = scanner.nextInt();
+                                    int monthForNewSh = scanner.nextInt();
+                                    int dayForNewSh = scanner.nextInt();
+                                    LocalDateTime dataForNewSh = LocalDateTime.of(
+                                            yearForNewSh,
+                                            monthForNewSh,
+                                            dayForNewSh,
+                                            LocalDateTime.now().getHour() + random.nextInt(12),
+                                            LocalDateTime.now().getMinute() + random.nextInt(60));
+
+                                    yourProileDoc.addNewSchedule(
+                                            newPatient,
+                                            dataForNewSh,
+                                            yourProileDoc.getSpeciality(),
+                                            false);
+                                    break;
+                                case 4:
+                                    System.out.println("Введите фио пациента");
+                                    String fullNameCancel = scanner.nextLine();
+
+
+                                    System.out.println("Введите время записи");
+                                    int yearCan = scanner.nextInt();
+                                    int monthCan = scanner.nextInt();
+                                    int dayCan = scanner.nextInt();
+                                    int hourCan = scanner.nextInt();
+                                    int miniteCan = scanner.nextInt();
+                                    LocalDateTime dateCan = LocalDateTime.of(yearCan, monthCan, dayCan, hourCan, miniteCan);
+
+                                    String cancel = yourProileDoc.cancelSchedule(fullNameCancel, dateCan);
+                                    System.out.println(cancel);
+                                    break;
+                                case 5:
+                                    System.out.println("Введите фио паицента которого хотите перенести");
+                                    String fullNamePatinet = scanner.nextLine();
+
+                                    System.out.println("Введите время записи");
+                                    int yearOld = scanner.nextInt();
+                                    int monthOld = scanner.nextInt();
+                                    int dayOld = scanner.nextInt();
+                                    int hourOld = scanner.nextInt();
+                                    int miniteOld = scanner.nextInt();
+                                    LocalDateTime dateOld = LocalDateTime.of(yearOld, monthOld, dayOld, hourOld, miniteOld);
+
+                                    System.out.println("Введите дату на которую хотите перенести запись");
+                                    int yearNew = scanner.nextInt();
+                                    int monthNew = scanner.nextInt();
+                                    int dayNew = scanner.nextInt();
+                                    int hourNew = scanner.nextInt();
+                                    int miniteNew = scanner.nextInt();
+                                    LocalDateTime dateNew = LocalDateTime.of(yearNew, monthNew, dayNew, hourNew, miniteNew);
+
+                                    yourProileDoc.reschedule(fullNamePatinet, dateOld, dateNew);
+                                    break;
+    
+                            }
+                        } while(isTrueFirst);
+
+                    }
 
                     break;
 
 
                 case 2:
                     String[] dataAsPatient = signUp();
-                    System.out.println(Arrays.toString(dataAsPatient));
+                    Patient yourProilePat = null;
+                    boolean isTrueDataPat = checkingProfilePatient(dataAsPatient, patients);
 
-                    Patient yourProfilePat = checkingProfilePatient(dataAsPatient, patients);
-                    System.out.println(yourProfilePat);
+                    if (isTrueDataPat) {
 
-                    isTrue = false;
+                        for (int i = 0; i < patients.length; i++) {
+                            if (patients[i].getFullName().equals(dataAsPatient[0])) {
+                                yourProilePat = patients[i];
+                            }
+                        }
+
+                        menuAsPatient();
+
+                        int choicePat = scanner.nextInt();
+
+                        isTrue = false;
+                        switch (choicePat) {
+                            case 1:
+                                System.out.println("Введите дату на которую хотите записаться");
+                                int year = scanner.nextInt();
+                                int month = scanner.nextInt();
+                                int day = scanner.nextInt();
+                                int hour = scanner.nextInt();
+                                int minute = scanner.nextInt();
+                                LocalDateTime date = LocalDateTime.of(year,month, day,hour, minute);
+
+                                System.out.println("Напишите болезнь в индексе");
+                                System.out.println(Arrays.toString(specialities));
+                                int speciality = scanner.nextInt();
+
+                                yourProilePat.bookAppointment(
+                                        yourProilePat,
+                                        date,
+                                        specialities[speciality],
+                                        false,
+                                        doctors[random.nextInt(doctors.length)]);
+                                break;
+                            case 2:
+                                System.out.println("Выберите запись которую хотите отменть ");
+                                Schedule[] allSchedule = yourProilePat.getSchedules();
+                                System.out.println();
+                                int infdexOfSchedule = scanner.nextInt();
+                                yourProilePat.cancelAppointment(allSchedule[infdexOfSchedule]);
+                                break;
+                            case 3:
+                                break;
+                            case 4:
+                                System.out.println("Введите время записи");
+                                int yearOld = scanner.nextInt();
+                                int monthOld = scanner.nextInt();
+                                int dayOld = scanner.nextInt();
+                                int hourOld = scanner.nextInt();
+                                int miniteOld = scanner.nextInt();
+                                LocalDateTime dateOld = LocalDateTime.of(yearOld, monthOld, dayOld, hourOld, miniteOld);
+
+                                System.out.println("Введите дату на которую хотите перенести запись");
+                                int yearNew = scanner.nextInt();
+                                int monthNew = scanner.nextInt();
+                                int dayNew = scanner.nextInt();
+                                int hourNew = scanner.nextInt();
+                                int miniteNew = scanner.nextInt();
+                                LocalDateTime dateNew = LocalDateTime.of(yearNew, monthNew, dayNew, hourNew, miniteNew);
+
+                                yourProilePat.reschedule(dateOld, dateNew);
+                                break;
+                            case 5:
+                                System.out.println(Arrays.toString(doctors));
+                                System.out.println("Выберите старую доктор");
+                                int indexOldDoctor = scanner.nextInt();
+                                Doctor oldDoctor =  doctors[indexOldDoctor];
+
+
+                                System.out.println("Введите дату записи");
+                                int yearSc = scanner.nextInt();
+                                int monthSc = scanner.nextInt();
+                                int daySc = scanner.nextInt();
+                                int hourSc = scanner.nextInt();
+                                int miniteSc = scanner.nextInt();
+                                LocalDateTime dateSc = LocalDateTime.of(yearSc, monthSc, daySc, hourSc, miniteSc);
+
+
+                                System.out.println(Arrays.toString(doctors));
+                                System.out.println("Выберите старую доктор");
+                                int indexNewDoctor = scanner.nextInt();
+                                Doctor newDoctor =  doctors[indexNewDoctor];
+
+
+                                Schedule[] schedule = yourProilePat.getSchedules();
+                                System.out.println("Выбериет запись у котого хотите перенести врача");
+                                int indexSchedule = scanner.nextInt();
+
+                                String res = yourProilePat.changeDoctor(oldDoctor,newDoctor, dateSc,schedule[indexSchedule]);
+                                System.out.println(res);
+                                break;
+                        }
+                    }
+
+
                     break;
 
 
                 case 3:
                     menuAsDirector();
+                    int choiceDir = scanner.nextInt();
                     isTrue = false;
+                    switch (choiceDir){
+                        case 1:
+                            System.out.println(hospital.getName());
+                            System.out.println(hospital.getAddress());
+                            System.out.println(hospital.getEmail());
+                            break;
+                        case 2:
+                            System.out.println("Введите специализацию");
+                            String speciality = scanner.nextLine();
+                            hospital.getByAllSpecialities(speciality);
+                            break;
+                        case 3:
+                            System.out.println("Введите фио");
+                            String fullName = scanner.nextLine();
+                            hospital.getDoctorByFullName(fullName);
+                            break;
+                        case 4:
+                            String[] result = hospital.getDoctorsAndPatientsQuantity();
+                            System.out.println(Arrays.toString(result));
+                            break;
+                        case 5:
+                            System.out.println(Arrays.toString(doctors));
+                            System.out.println("Выберите врача");
+                            int choiceDoctor = scanner.nextInt();
+                            Schedule[] resultSchedule =  hospital.getAllSchedulesDoctorByFullName(choiceDoctor);
+                            System.out.println(resultSchedule);
+                            break;
+                        case 6:
+                            System.out.println("Выберите врача");
+                            int indexDeleted = scanner.nextInt();
+                            String resultString = hospital.deleteDoctor(indexDeleted);
+                            System.out.println(resultString);
+                            break;
+                        case 7:
+                            System.out.println("ФИО");
+                            String fullNameOfNewDoc = scanner.nextLine();
+                            System.out.println(Arrays.toString(specialities));
+                            System.out.println("Выберите специальность ");
+                            int indexOf = scanner.nextInt();
+                            System.out.println("опыт работы");
+                            int experienct = scanner.nextInt();
+
+                            System.out.println("Введите логин и пароль");
+                            String userName = scanner.nextLine();
+                            String password = scanner.nextLine();
+
+
+                            System.out.println("Введите опыт работы");
+                            int salary = scanner.nextInt();
+
+
+                            Doctor newDoc = new Doctor(fullNameOfNewDoc, specialities[indexOf],experienct, new Schedule[0],  "user01", "passsss111", salary,null);
+                            String resultAdd = hospital.addNewDoctor(newDoc);
+                            System.out.println(resultAdd);
+
+                            break;
+                        case 8:
+                            System.out.println(Arrays.toString(doctors));
+                            System.out.println("Выбериет индекс");
+                            int indexOfDoctor = scanner.nextInt();
+
+                            System.out.println("Введите новую зп ");
+                            int salaryNex = scanner.nextInt();
+
+
+                            System.out.println("Введите специальность");
+                            String specialityNew = scanner.nextLine();
+                            String resultUpdate = hospital.updateDoctor(indexOfDoctor, salaryNex, specialityNew);
+                            System.out.println(resultUpdate);
+                            break;
+                        case 9:
+                            String resultSalary = hospital.transferSalary();
+                            System.out.println(resultSalary);
+                            break;
+
+                    }
+
                     break;
 
             }
@@ -131,8 +410,7 @@ public class Main {
                 3.Создать запись на прием
                 4.Отменить запись 
                 5.Перенести запись 
-                6. Вызвать данные про карту 
-                0. Назад 
+
                 """);
     }
 
@@ -143,8 +421,7 @@ public class Main {
                 3. Просмотр записи 
                 4. Перенести запись 
                 5. Смена врачи
-                6. Вызвать данные про карту 
-                0. Назад
+
                 """);
     }
 
@@ -159,19 +436,18 @@ public class Main {
                 7.Добавить доктора
                 8.Отредоктировать данные врача
                 9.Начисление зарплаты
-                0.Назад
                 """);
     }
 
-    public static void menuBank() {
-        System.out.println("""
-                1.Просмотр баланса
-                2.Пополнение баланса
-                3.Вывод средства
-                4.Перевод по карте 
-                0. Назад
-                """);
-    }
+//    public static void menuBank() {
+//        System.out.println("""
+//                1.Просмотр баланса
+//                2.Пополнение баланса
+//                3.Вывод средства
+//                4.Перевод по карте
+//                0. Назад
+//                """);
+//    }
 
     public static String[] signUp () {
         System.out.println("Введите фио");
@@ -190,34 +466,34 @@ public class Main {
         };
     }
 
-    public static Doctor checkingProfileDoctor(String[] inputData, Doctor[] doctors){
+    public static Boolean checkingProfileDoctor(String[] inputData, Doctor[] doctors){
         for (Doctor doctor : doctors) {
             if (inputData[0].equalsIgnoreCase(doctor.getFullName())) {
                 if(inputData[1].equals(doctor.getUserName())) {
                     if(inputData[2].equals(doctor.getPassword())) {
                         System.out.println("Вы успешно зашли как:  " + doctor.getFullName());
-                        return doctor;
+                        return true;
                     }
                 }
             }
         }
         System.out.println("Something is incorrect try again");
-        return null;
+        return false;
     }
 
-    public static Patient checkingProfilePatient(String[] inputData, Patient[] patients){
+    public static boolean  checkingProfilePatient(String[] inputData, Patient[] patients){
         for (Patient patient : patients) {
             if (inputData[0].equalsIgnoreCase(patient.getFullName())) {
                 if(inputData[1].equals(patient.getUserName())) {
                     if(inputData[2].equals(patient.getPassword())) {
                         System.out.println("Вы успешно зашли как:  " + patient.getFullName());
-                        return patient;
+                        return true;
                     }
                 }
             }
         }
         System.out.println("Something is incorrect try again");
-        return null;
+        return false;
     }
 
 
