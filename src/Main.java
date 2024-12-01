@@ -15,6 +15,8 @@ public class Main {
         hospital.setAddress("проспект мира 57");
         hospital.setName("Hospital");
         hospital.setEmail("inf@gmail.com");
+        BankAccount bankAccountHospital = new BankAccount("4444 4543 7868 9762", 577, "iphospital", 100000);
+        hospital.setBankAccount(bankAccountHospital);
 
         Speciality[] specialities = {
                 new Speciality("Кардиология", 1200),
@@ -108,9 +110,9 @@ public class Main {
                         int choiceDoctor = scanner.nextInt();
 
                         isTrue = false;
-                        boolean isTrueFirst = false;
 
-                        do {
+
+
                             switch (choiceDoctor) {
                                 case 1:
                                     Schedule[] scheduleAll = yourProileDoc.getAllSchedules();
@@ -144,11 +146,12 @@ public class Main {
                                             LocalDateTime.now().getHour() + random.nextInt(12),
                                             LocalDateTime.now().getMinute() + random.nextInt(60));
 
-                                    yourProileDoc.addNewSchedule(
+                                    String resultAdd = yourProileDoc.addNewSchedule(
                                             newPatient,
                                             dataForNewSh,
                                             yourProileDoc.getSpeciality(),
                                             false);
+                                    System.out.println(resultAdd);
                                     break;
                                 case 4:
                                     System.out.println("Введите фио пациента");
@@ -186,11 +189,12 @@ public class Main {
                                     int miniteNew = scanner.nextInt();
                                     LocalDateTime dateNew = LocalDateTime.of(yearNew, monthNew, dayNew, hourNew, miniteNew);
 
-                                    yourProileDoc.reschedule(fullNamePatinet, dateOld, dateNew);
+                                    String resultRechedule = yourProileDoc.reschedule(fullNamePatinet, dateOld, dateNew);
+                                    System.out.println(resultRechedule);
                                     break;
     
                             }
-                        } while(isTrueFirst);
+
 
                     }
 
@@ -229,23 +233,31 @@ public class Main {
                                 System.out.println(Arrays.toString(specialities));
                                 int speciality = scanner.nextInt();
 
-                                yourProilePat.bookAppointment(
+                                String resultString = yourProilePat.bookAppointment(
                                         yourProilePat,
                                         date,
                                         specialities[speciality],
                                         false,
                                         doctors[random.nextInt(doctors.length)]);
+                                System.out.println(resultString);
                                 break;
                             case 2:
                                 System.out.println("Выберите запись которую хотите отменть ");
                                 Schedule[] allSchedule = yourProilePat.getSchedules();
-                                System.out.println();
+                                System.out.println(Arrays.toString(allSchedule));
                                 int infdexOfSchedule = scanner.nextInt();
-                                yourProilePat.cancelAppointment(allSchedule[infdexOfSchedule]);
+
+                                String resultCaseTwo = yourProilePat.cancelAppointment(allSchedule[infdexOfSchedule]);
+                                System.out.println(resultCaseTwo);
                                 break;
                             case 3:
+                                Schedule[] resultShedule =  yourProilePat.getSchedules();
+                                System.out.println(Arrays.toString(resultShedule));
                                 break;
                             case 4:
+                                Schedule[] allScheduleCaseFour = yourProilePat.getSchedules();
+                                System.out.println(Arrays.toString(allScheduleCaseFour));
+
                                 System.out.println("Введите время записи");
                                 int yearOld = scanner.nextInt();
                                 int monthOld = scanner.nextInt();
@@ -262,7 +274,8 @@ public class Main {
                                 int miniteNew = scanner.nextInt();
                                 LocalDateTime dateNew = LocalDateTime.of(yearNew, monthNew, dayNew, hourNew, miniteNew);
 
-                                yourProilePat.reschedule(dateOld, dateNew);
+                                String resultCasFour = yourProilePat.reschedule(dateOld, dateNew);
+                                System.out.println(resultCasFour);
                                 break;
                             case 5:
                                 System.out.println(Arrays.toString(doctors));
@@ -281,7 +294,7 @@ public class Main {
 
 
                                 System.out.println(Arrays.toString(doctors));
-                                System.out.println("Выберите старую доктор");
+                                System.out.println("Выберите новую  доктор");
                                 int indexNewDoctor = scanner.nextInt();
                                 Doctor newDoctor =  doctors[indexNewDoctor];
 
@@ -301,85 +314,100 @@ public class Main {
 
 
                 case 3:
-                    menuAsDirector();
-                    int choiceDir = scanner.nextInt();
-                    isTrue = false;
-                    switch (choiceDir){
-                        case 1:
-                            System.out.println(hospital.getName());
-                            System.out.println(hospital.getAddress());
-                            System.out.println(hospital.getEmail());
-                            break;
-                        case 2:
-                            System.out.println("Введите специализацию");
-                            String speciality = scanner.nextLine();
-                            hospital.getByAllSpecialities(speciality);
-                            break;
-                        case 3:
-                            System.out.println("Введите фио");
-                            String fullName = scanner.nextLine();
-                            hospital.getDoctorByFullName(fullName);
-                            break;
-                        case 4:
-                            String[] result = hospital.getDoctorsAndPatientsQuantity();
-                            System.out.println(Arrays.toString(result));
-                            break;
-                        case 5:
-                            System.out.println(Arrays.toString(doctors));
-                            System.out.println("Выберите врача");
-                            int choiceDoctor = scanner.nextInt();
-                            Schedule[] resultSchedule =  hospital.getAllSchedulesDoctorByFullName(choiceDoctor);
-                            System.out.println(resultSchedule);
-                            break;
-                        case 6:
-                            System.out.println("Выберите врача");
-                            int indexDeleted = scanner.nextInt();
-                            String resultString = hospital.deleteDoctor(indexDeleted);
-                            System.out.println(resultString);
-                            break;
-                        case 7:
-                            System.out.println("ФИО");
-                            String fullNameOfNewDoc = scanner.nextLine();
-                            System.out.println(Arrays.toString(specialities));
-                            System.out.println("Выберите специальность ");
-                            int indexOf = scanner.nextInt();
-                            System.out.println("опыт работы");
-                            int experienct = scanner.nextInt();
+                        menuAsDirector();
+                        int choiceDir = scanner.nextInt();
+                        isTrue = false;
 
-                            System.out.println("Введите логин и пароль");
-                            String userName = scanner.nextLine();
-                            String password = scanner.nextLine();
+                        switch (choiceDir) {
+                            case 1:
+                                System.out.println(hospital.getName());
+                                System.out.println(hospital.getAddress());
+                                System.out.println(hospital.getEmail());
+                                break;
+                            case 2:
+
+                                System.out.println("Введите специализацию");
+                                scanner.next();
+                                String speciality = scanner.nextLine();
+
+                                Doctor[] resultDoctorBySpec = hospital.getByAllSpecialities(speciality);
+                                System.out.println(Arrays.toString(resultDoctorBySpec));
+
+                                break;
+                            case 3:
+                                System.out.println("Введите фио");
+                                scanner.nextLine();
+                                String fullName = scanner.nextLine();
+                                Doctor resultDoctor = hospital.getDoctorByFullName(fullName);
+                                System.out.println(resultDoctor);
+                                break;
+                            case 4:
+                                String[] result = hospital.getDoctorsAndPatientsQuantity();
+                                System.out.println(Arrays.toString(result));
+                                break;
+                            case 5:
+                                System.out.println(Arrays.toString(doctors));
+                                System.out.println("Выберите врача");
+                                int choiceDoctor = scanner.nextInt();
+                                Schedule[] resultSchedule = hospital.getAllSchedulesDoctorByFullName(choiceDoctor);
+                                System.out.println(Arrays.toString(resultSchedule));
+                                break;
+                            case 6:
+                                System.out.println("Выберите врача");
+                                System.out.println(Arrays.toString(doctors));
 
 
-                            System.out.println("Введите опыт работы");
-                            int salary = scanner.nextInt();
+                                int indexDeleted = scanner.nextInt();
+
+                                String resultString = hospital.deleteDoctor(indexDeleted);
+                                System.out.println(resultString);
+                                break;
+                            case 7:
+                                System.out.println("ФИО");
+                                scanner.nextLine();
+                                String fullNameOfNewDoc = scanner.nextLine();
+                                System.out.println(Arrays.toString(specialities));
+                                System.out.println("Выберите специальность ");
+                                int indexOf = scanner.nextInt();
+                                System.out.println("опыт работы");
+                                int experienct = scanner.nextInt();
+
+                                System.out.println("Введите логин и пароль");
+                                String userName = scanner.nextLine();
+                                scanner.nextLine();
+                                String password = scanner.nextLine();
 
 
-                            Doctor newDoc = new Doctor(fullNameOfNewDoc, specialities[indexOf],experienct, new Schedule[0],  "user01", "passsss111", salary,null);
-                            String resultAdd = hospital.addNewDoctor(newDoc);
-                            System.out.println(resultAdd);
-
-                            break;
-                        case 8:
-                            System.out.println(Arrays.toString(doctors));
-                            System.out.println("Выбериет индекс");
-                            int indexOfDoctor = scanner.nextInt();
-
-                            System.out.println("Введите новую зп ");
-                            int salaryNex = scanner.nextInt();
+                                System.out.println("Введите заплату");
+                                int salary = scanner.nextInt();
 
 
-                            System.out.println("Введите специальность");
-                            String specialityNew = scanner.nextLine();
-                            String resultUpdate = hospital.updateDoctor(indexOfDoctor, salaryNex, specialityNew);
-                            System.out.println(resultUpdate);
-                            break;
-                        case 9:
-                            String resultSalary = hospital.transferSalary();
-                            System.out.println(resultSalary);
-                            break;
+                                Doctor newDoc = new Doctor(fullNameOfNewDoc, specialities[indexOf], experienct, new Schedule[0], "user01", "passsss111", salary, null);
+                                String resultAdd = hospital.addNewDoctor(newDoc);
+                                System.out.println(resultAdd);
 
-                    }
+                                break;
+                            case 8:
+                                System.out.println(Arrays.toString(doctors));
+                                System.out.println("Выбериет индекс");
+                                int indexOfDoctor = scanner.nextInt();
+
+                                System.out.println("Введите новую зп ");
+                                int salaryNex = scanner.nextInt();
+
+
+                                System.out.println("Введите специальность");
+                                scanner.nextLine();
+                                String specialityNew = scanner.nextLine();
+                                String resultUpdate = hospital.updateDoctor(indexOfDoctor, salaryNex, specialityNew);
+                                System.out.println(resultUpdate);
+                                break;
+                            case 9:
+                                String resultSalary = hospital.transferSalary();
+                                System.out.println(resultSalary);
+                                break;
+                        }
+
 
                     break;
 
@@ -421,7 +449,6 @@ public class Main {
                 3. Просмотр записи 
                 4. Перенести запись 
                 5. Смена врачи
-
                 """);
     }
 
